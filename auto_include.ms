@@ -3,9 +3,14 @@ proc(_is_cloaked, assign(@player, player()),
 )
 
 proc(_cloak_player, @newname, assign(@player, player()),
+	if(not(has_permission(pinfo(@player, 0), 'cloak.apply')),
+		msg(concat(color(red), 'You do not have permission to cloak!'))
+		return(false)
+	)
+	
 	set_display_name(@player, @newname)
 	
-	assign(@key, concat('playerdata.', pinfo(@player, 0), '.displayname'))
+	assign(@key, concat('entityreborn.playerdata.', pinfo(@player, 0), '.displayname'))
 	store_value(@key, @newname)
 	
 	console(@key '=' get_value(@key))
@@ -14,10 +19,16 @@ proc(_cloak_player, @newname, assign(@player, player()),
 
 proc(_decloak_player, assign(@player, player()),
 	assign(@rawplayer, pinfo(@player, 0))
+	
+	if(not(has_permission(@rawplayer, 'cloak.remove')),
+		msg(concat(color(red), 'You do not have permission to decloak!'))
+		return(false)
+	)
+	
 	assign(@dispname, pinfo(@player, 4))
 	
 	if(_is_cloaked(@rawplayer),
-		clear_value(concat('playerdata', $rawplayer, '.displayname'))
+		clear_value(concat('entityreborn.playerdata.', @rawplayer, '.displayname'))
 		reset_display_name(@rawplayer)
 		
 		msg(@dispname 'is now known as' @rawplayer)
@@ -27,14 +38,18 @@ proc(_decloak_player, assign(@player, player()),
 )
 
 proc(_player_joined, @player,
-	assign(@key, concat('playerdata.', pinfo(@player, 0), '.displayname'))
+    if(not(has_permission(@player, 'cloak.cloakonjoin')),
+		return(false)
+	)
+    
+	assign(@key, concat('entityreborn.playerdata.', pinfo(@player, 0), '.displayname'))
 	assign(@newname, get_value(@key))
 	
 	if(not(is_null(@newname)),
 		set_display_name(@player, @newname)
-		console('Renamed' @player 'to' @newname)
+		debug('Renamed' @player 'to' @newname)
 	, # else
-		console(@player 'not being cloaked.')
+		debug(@player 'not being cloaked.')
 	)
 )
 		 
