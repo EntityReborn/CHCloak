@@ -1,0 +1,2 @@
+*:/cloak $newname [$]= _cloak_player($newname)
+*:/decloak [$] = _decloak_player()
