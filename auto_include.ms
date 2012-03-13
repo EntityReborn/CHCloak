@@ -13,8 +13,7 @@ proc(_cloak_player, @newname, assign(@player, player()),
 	assign(@key, concat('entityreborn.playerdata.', pinfo(@player, 0), '.displayname'))
 	store_value(@key, @newname)
 	
-	console(@key '=' get_value(@key))
-	msg(sconcat(pinfo(@player, 0), 'is now named', @newname))
+	broadcast(pinfo(@player, 0) 'is now known as' @newname)
 )
 
 proc(_decloak_player, assign(@player, player()),
@@ -31,7 +30,7 @@ proc(_decloak_player, assign(@player, player()),
 		clear_value(concat('entityreborn.playerdata.', @rawplayer, '.displayname'))
 		reset_display_name(@rawplayer)
 		
-		msg(@dispname 'is now known as' @rawplayer)
+		broadcast(@dispname 'is now known as' @rawplayer)
 	, # else
 		tmsg(@player, 'You currently aren\'t cloaked.')
 	)
@@ -47,9 +46,6 @@ proc(_player_joined, @player,
 	
 	if(not(is_null(@newname)),
 		set_display_name(@player, @newname)
-		debug('Renamed' @player 'to' @newname)
-	, # else
-		debug(@player 'not being cloaked.')
 	)
 )
 		 
